@@ -13,7 +13,7 @@ function hash(password) {
 const Account = new Schema({
   profile: {
     username: String,
-    thumbnail: { type: String, default: "/static/images/default_thumbnail.png" }
+    thumbnail: { type: String, default: "https://i.pinimg.com/originals/ed/64/ab/ed64ab1b0b12b106d396cc16c1d57953.jpg" }
   },
   email: {
     type: String
