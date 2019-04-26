@@ -18,16 +18,6 @@ const Account = new Schema({
   email: {
     type: String
   },
-  social: {
-    facebook: {
-      id: String,
-      accessToken: String
-    },
-    google: {
-      id: String,
-      accessToken: String
-    }
-  },
   password: String,
   thoughtCount: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now }

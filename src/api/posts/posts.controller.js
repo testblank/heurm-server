@@ -7,6 +7,7 @@ const {
 exports.list = async ctx => {
   let posts;
   try {
+    // 반환값이 Promise 이므로 await 사용가능
     posts = await Post.find()
       .sort({ _id: -1 })
       .limit(12)
@@ -15,41 +16,45 @@ exports.list = async ctx => {
     return ctx.body(500, error);
   }
 
+  // console.log(posts)
   ctx.body = posts;
 };
 
-exports.get = async ctx => {
-  const { title } = ctx.params;
-
-  let post;
+exports.search = async ctx => {
+  const { key, value } = ctx.params;
+  let post = null;
 
   try {
-    post = await Post.findById(title).exec();
+    post = await (key === "title"
+      ? Post.findByTitle(value)
+      : Post.findByUsername(value));
   } catch (error) {
-    if (error.name === "CastError") {
-      ctx.status = 400;
-      return;
-    }
-    return ctx.body(500, error);
-  }
-
-  if (!post) {
-    ctx.status = 400;
-    ctx.body = { message: "post not found" };
-    return;
+    ctx.throw(500, error);
   }
 
   ctx.body = post;
 };
 
-exports.create = async ctx => {
-  const { title, username, text, photo, tags } = ctx.request.body;
+exports.write = async ctx => {
+  const {
+    title,
+    username,
+    text,
+    photo,
+    tags,
+    date,
+    is_edited,
+    meta
+  } = ctx.request.body;
   const post = new Post({
     title,
     username,
     text,
     photo,
-    tags
+    tags,
+    date,
+    is_edited,
+    meta
   });
 
   try {
@@ -61,6 +66,7 @@ exports.create = async ctx => {
   ctx.body = post;
 };
 
+// put은 데이터 통째로 바꿈 && 데이터 없을 시 새로 만듬
 // exports.replace = async ctx => {
 //   const { id } = ctx.params;
 
@@ -71,19 +77,13 @@ exports.create = async ctx => {
 
 //   const schema = Joi.object().keys({
 //     title: Joi.string().required(),
-//     authors: Joi.array().items(
-//       Joi.object().keys({
-//         name: Joi.string().required(),
-//         email: Joi.string()
-//           .email()
-//           .required()
-//       })
-//     ),
-//     publishedDate: Joi.date().required(),
-//     price: Joi.number().required(),
+//     username: Joi.string().required(),
+//     text: Joi.string().required(),
+//     photo: Joi.string().required(),
 //     tags: Joi.array().items(Joi.string().required())
 //   });
 
+//   // 검증
 //   const result = Joi.validate(ctx.request.body, schema);
 
 //   if (result.error) {
@@ -92,47 +92,45 @@ exports.create = async ctx => {
 //     return;
 //   }
 
-//   let book;
-
+//   let post;
 //   try {
-//     book = await book.findByIdAndUpdate(id, ctx.request.body, {
+//     post = await Post.findByIdAndUpdate(id, ctx.request.body, {
 //       upsert: true,
-//       new: true
-//     });
-//   } catch (error) {
-//     return ctx.throw(500, error);
-//   }
-
-//   ctx.body = book;
-// };
-
-// exports.delete = async ctx => {
-//   const { id } = ctx.params;
-
-//   try {
-//     await Book.findByIdAndRemove(id).exec();
-//   } catch (error) {
-//     if (error.name === "CastError") {
-//       ctx.status = 400;
-//       return;
-//     }
-//   }
-//   ctx.status = 204;
-// };
-
-// exports.update = async ctx => {
-//   const { id } = ctx.params;
-//   if (!ObjectId.isValid(id)) {
-//     ctx.status = 400;
-//     return;
-//   }
-//   let book;
-//   try {
-//     book = await Book.findByIdAndUpdate(id, ctx.request.body, {
 //       new: true
 //     });
 //   } catch (error) {
 //     return ctx.throw(500, e);
 //   }
-//   ctx.body = book;
+//   ctx.body = post;
 // };
+
+exports.delete = async ctx => {
+  const { id } = ctx.params;
+
+  try {
+    await Book.findByIdAndRemove(id).exec();
+  } catch (error) {
+    if (error.name === "CastError") {
+      ctx.status = 400;
+      return;
+    }
+  }
+  ctx.status = 204;
+};
+
+exports.update = async ctx => {
+  const { id } = ctx.params;
+  if (!ObjectId.isValid(id)) {
+    ctx.status = 400;
+    return;
+  }
+  let post;
+  try {
+    post = await Post.findByIdAndUpdate(id, ctx.request.body, {
+      new: true
+    });
+  } catch (error) {
+    return ctx.throw(500, e);
+  }
+  ctx.body = post;
+};

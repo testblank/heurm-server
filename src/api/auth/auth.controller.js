@@ -114,7 +114,7 @@ exports.exists = async ctx => {
       ? Account.findByEmail(value)
       : Account.findByUsername(value));
   } catch (error) {
-    ctx.throw(500, e);
+    ctx.throw(500, error);
   }
 
   ctx.body = {
