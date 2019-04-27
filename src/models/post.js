@@ -18,7 +18,7 @@ const Post = new Schema({
   text: String,
   photo: {
     type: String,
-    default: "https://dummyimage.com/600x400/000/fff"
+    default: "https://dummyimage.com/600x400/8c268c/ffffff"
   },
   tags: String,
   date: {

@@ -1,5 +1,4 @@
 const Post = require("models/post");
-const Joi = require("joi");
 const {
   Types: { ObjectId }
 } = require("mongoose");
@@ -36,6 +35,7 @@ exports.search = async ctx => {
 };
 
 exports.write = async ctx => {
+  // console.log('들어오나')
   const {
     title,
     username,
@@ -44,7 +44,7 @@ exports.write = async ctx => {
     tags,
     date,
     is_edited,
-    meta
+    // meta
   } = ctx.request.body;
   const post = new Post({
     title,
@@ -54,7 +54,7 @@ exports.write = async ctx => {
     tags,
     date,
     is_edited,
-    meta
+    // meta
   });
 
   try {
@@ -62,7 +62,7 @@ exports.write = async ctx => {
   } catch (error) {
     return ctx.throw(500, error);
   }
-
+  // console.log(post);
   ctx.body = post;
 };
 
