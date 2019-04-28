@@ -35,7 +35,8 @@ exports.search = async ctx => {
 };
 
 exports.write = async ctx => {
-  // console.log('들어오나')
+  console.log('ctx.body')
+  console.log(ctx.request.body)
   const {
     title,
     username,
@@ -46,6 +47,7 @@ exports.write = async ctx => {
     is_edited,
     // meta
   } = ctx.request.body;
+  console.log(ctx.request.body);
   const post = new Post({
     title,
     username,
@@ -62,7 +64,7 @@ exports.write = async ctx => {
   } catch (error) {
     return ctx.throw(500, error);
   }
-  // console.log(post);
+  console.log(post);
   ctx.body = post;
 };
 

@@ -63,6 +63,8 @@ exports.localRegister = async ctx => {
 };
 
 exports.localLogin = async ctx => {
+console.log('login sdjkfhskjfdhskdjfh')
+
   const schema = Joi.object().keys({
     email: Joi.string()
       .email()
